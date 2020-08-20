@@ -83,7 +83,9 @@ export default {
     
   },
   mounted: function () {
-    this.ranks = [...this.$store.state.envs]    
+    this.$store.state.envs.forEach((v)=>{
+      this.ranks[v.i] = v.val
+    })
   },
 
   created: function () {
