@@ -68,12 +68,16 @@ export default {
     },
     selectDone() {
       console.log("完成");
+      let username = localStorage.getItem('Authorization');
       let data = {
         methods: this.$store.state.resSelection,
         resources: this.$store.state.ResourceSelection,
         envs: this.$store.state.envs,
         demand: this.$store.state.demand,
+        username
       };
+
+      this.axios.post("http://jrwh:8000/api/history/", data)
 
       this.axios.post("http://jrwh:8000/api/ans/", data).then((res) => {
         let data = res.data;
