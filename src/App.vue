@@ -30,7 +30,7 @@
         <el-button type="primary" v-else-if="active>=0" @click="next">下一步</el-button>
         <el-button type="primary" v-else @click="next">开始</el-button>
 
-        <el-button @click="cz">重置</el-button>
+        <el-button @click="cz">退出</el-button>
       </el-aside>
       <!--侧边栏-->
       <el-container>
@@ -67,17 +67,16 @@ export default {
       this.$store.commit("on_active", this.active);
     },
     selectDone() {
-      console.log("完成");
-      let username = localStorage.getItem('Authorization');
+      let username = localStorage.getItem("Authorization");
       let data = {
         methods: this.$store.state.resSelection,
         resources: this.$store.state.ResourceSelection,
         envs: this.$store.state.envs,
         demand: this.$store.state.demand,
-        username
+        username,
       };
 
-      this.axios.post("http://jrwh:8000/api/history/", data)
+      // this.axios.post("http://jrwh:8000/api/history/", data)
 
       this.axios.post("http://jrwh:8000/api/ans/", data).then((res) => {
         let data = res.data;
@@ -96,6 +95,37 @@ export default {
         document.body.appendChild(link);
         link.click();
       });
+      // this.$message("已完成本次决策,结果已下载");
+      this.$confirm("决策已完成, 是否重新开始?", "提示", {
+        confirmButtonText: "是",
+        cancelButtonText: "否",
+        type: "info",
+      })
+        .then(() => {
+          this.active = -1;
+          this.$store.commit("on_active", this.active);
+          localStorage.removeItem('JRWH');
+
+          this.$router.replace("TaskSelect");
+          location.reload();
+
+          this.$message({
+            type: "success",
+            message: "已重置",
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已完成本次决策,结果已下载",
+          });
+        });
+
+      // this.$notify({
+      //   title: "完成",
+      //   message: "已完成本次决策,结果已下载",
+      //   duration: 3000,
+      // });
     },
     cz() {
       this.active = -1;

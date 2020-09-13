@@ -17,6 +17,7 @@
             <div slot="content" v-html="rate_toolip(e.items)"></div>
             <i class="el-icon-info"></i>
           </el-tooltip>
+          <button @click="rank_reset(e.id)">清除</button>
         </el-col>
       </el-row>
       <el-divider></el-divider>
@@ -41,7 +42,11 @@ export default {
         val: this.ranks[id],
       });
     },
-
+    rank_reset(id) {
+      this.ranks[id] = 0;
+      this.$forceUpdate();
+      this.$store.commit("demand_rank_onchange", { i: id, val: this.ranks[id] });
+    },
     rate_txt(items) {
       let res = new Array();
       res = items.map((item) => {
